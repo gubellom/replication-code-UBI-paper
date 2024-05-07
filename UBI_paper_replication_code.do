@@ -696,9 +696,6 @@ outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, Income Control
 *********** end ********************+++++++
 
 
-****** ROBUSTNESS REFEREE 2
-
-
 *** Generate cheating variable using CPA (APPENDIX ROBUSTNESS CHECKS)
 
 **** GENERATE THE PCA VARIABLE
