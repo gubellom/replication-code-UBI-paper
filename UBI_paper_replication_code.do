@@ -863,8 +863,6 @@ areg basinc trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(clus
 outreg2 using mistrustonly.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((4)) 
 
 
-**** ROBUSTNESS REFEREE 2
-
 **** Generalised Mistrust x Welfare cost
 
 areg basinc c.institutions c.trust2##i.cost $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
