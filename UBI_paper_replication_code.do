@@ -28,9 +28,7 @@ rename maritalb married
 replace married=1 if married==2
 replace married=3 if married==4
 
-replace emprf14=1 if emprf14==2
-replace emprm14=1 if emprm14==2
-
+*****
 gen educ=.
 replace educ=1 if eisced==1
 replace educ=2 if eisced ==2
@@ -38,7 +36,10 @@ replace educ=3 if eisced >=3 & eisced<=4
 replace educ=4 if eisced ==5
 replace educ=5 if eisced >=6 & eisced<=7
 
+*****
 replace ctzcntr=0 if ctzcntr==2
+
+*****
 replace sex=0 if sex==2
 
 *****
@@ -111,15 +112,9 @@ rename (ctzcntr emplstatus married sex rlgdgr) (citizen employment maritalstatus
 tostring isco08, gen(my_string_variable) format(%07.0f)
 gen first_two_digits2 =  substr(my_string_variable, 4, .) 
 gen first_two_digits =  substr(first_two_digits2, 1, strlen(first_two_digits2) - 2) 
-
-gen var0=first_two_digits2
-gen var1=my_string_variable
-gen var2=first_two_digits
-
 destring first_two_digits, generate(isco)
 
-**** variables for mechanisms (welfare retrechment)
-
+**** variables for mechanisms (welfare retrenchment)
 
 rename wrkprbf UBIwrkprbf
 egen mwrkprbf= mean(UBIwrkprbf)
@@ -130,7 +125,6 @@ rename eduunmp UBIeduunmp
 egen meduunmp= mean(UBIeduunmp)
 egen sdeduunmp=sd(UBIeduunmp)
 gen eduunmp= (UBIeduunmp-meduunmp)/sdeduunmp
-
 
 revrs inctxff, replace
 rename inctxff UBIinctxff
@@ -254,11 +248,11 @@ graph save trust2.gph, replace
 graph combine institutions.gph trust2.gph, graphregion(color(white)) plotregion(color(white) margin(small)) xsize(8)
 graph export "combinedd.eps", replace
 
-
+*****
 revrs basinc
 tabulate revbasinc, generate(B)
 
-*setting colors
+*setting colours
 graph hbar B1 B2 B3 B4 [aw=anweight], vert over(iso2, sort(4) descending label(angle(0) labsize(small))) stack percent legend(order(1 "Strongly against" 2 "Against" 3 "In favor" 4 "Strongly in favor" )) graphregion(color(white)) plotregion(color(white)) ytitle("UBI preferences % population", size(medium)) yscale(titlegap(*5)) bar(1, color(eltblue%40)) ///
     bar(2, color(ebblue%60)) ///
     bar(3, color(navy%80)) ///
@@ -384,13 +378,7 @@ graph export TableCheatGraph.pdf, replace
 
 
 
-
-
-
-
-
-
-**** Heterogeneous Analysis main body
+**** Heterogeneous Analysis main body of the paper
 preserve
 
 ** gen HigherEducation
@@ -507,9 +495,8 @@ restore
 
 
 
-***** HETEROGENEOUS ANALYSIS Appendix but describe in one paragraph
+***** HETEROGENEOUS ANALYSIS Appendix 
 preserve
-
 
 
 * gen variable for interaction (Urban heterogeneity)
@@ -683,12 +670,7 @@ areg basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(re
 outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((5)) 
 
 
-
-
-*********** end ********************+++++++
-
-
-*** Generate cheating variable using CPA (APPENDIX ROBUSTNESS CHECKS)
+*** Generate cheating variable using PCA (APPENDIX ROBUSTNESS CHECKS)
 
 **** GENERATE THE PCA VARIABLE
 global misb bennent uentrjb
@@ -1052,7 +1034,6 @@ graph save antiimmigrantspoli.gph, replace
 
 *** TRUST IN EUROPEAN PARLIAMENT
 
-
 quietly:areg basinc c.institutions c.trust2 trstep c.institutions#c.trstep c.trust2#c.trstep $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
 outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) dec(3) append ctitle((2)) 
 margins, dydx(trust2) at(trstep=(0(1)10))
@@ -1065,8 +1046,6 @@ graph save eupoli.gph, replace
 
 
 **** authoritarism
-
-
 
 quietly:areg basinc c.institutions c.trust2 ipstrgv c.institutions#c.ipstrgv c.trust2#c.ipstrgv $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
 outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3))
@@ -1081,6 +1060,8 @@ graph save stronggovapoli.gph, replace
 graph combine antiimmigrantstrust.gph antiimmigrantspoli.gph eutrust.gph eupoli.gph stronggovatrust.gph stronggovapoli.gph, rows(3) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
 graph export populism.pdf, replace
 
+
+*********** end ********************
 
 
 
