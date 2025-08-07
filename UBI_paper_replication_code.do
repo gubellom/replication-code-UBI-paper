@@ -499,11 +499,6 @@ margins, dydx(trust2) at(NotRel=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5))  xlab(2 "Religious" 1 "Not Religious") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Religiosity", size(large)) title("Average Marginal Effect with 95% CIs" "Generalised Mistrust", size(large)) yline(0)  graphregion(color(white)) plotregion(color(white))
 graph save ReligiousT.gph, replace 
 
-
-
-
-*graph combine ReligiousP.gph ReligiousT.gph PoliticalP.gph PoliticalT.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small))
-
 graph combine ReligiousP.gph ReligiousT.gph, rows(2) cols(1) graphregion(color(white)) plotregion(color(white) margin(small))  
 graph export Table7Graph.pdf, replace
 
@@ -899,8 +894,6 @@ graph export mistrustxcostmargins.pdf, replace
 
 **** Non-standardized basinc
 
- 
-
 areg NS_basinc institutions,absorb(region2) vce(cluster region2)
 outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
 areg NS_basinc trust2,absorb(region2) vce(cluster region2)
@@ -1087,6 +1080,7 @@ graph save stronggovapoli.gph, replace
 
 graph combine antiimmigrantstrust.gph antiimmigrantspoli.gph eutrust.gph eupoli.gph stronggovatrust.gph stronggovapoli.gph, rows(3) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
 graph export populism.pdf, replace
+
 
 
 
