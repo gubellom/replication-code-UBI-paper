@@ -2,23 +2,21 @@ cd "insert directory"
 clear
 use ESS8
 
-*** generate dataset
-
-rename (agea hinctnta gndr eduyrs)  (age income sex eduyrs)
+*** Clean dataset
 
 encode cntry, gen(country)
-gen agesq= age^2
 rename cntry iso2
-rename inwyye year
 drop if iso2=="IL" | iso2=="RU"
 encode region, gen(region2)
-// the region (in Norway) with value 1 is named 99999. I drop it because I cannot associate to any real region
-replace region2=. if region2==1 
+replace region2=. if region2==1  // the region (in Norway) with value 1 is named 99999. I drop it because I cannot associate to any real region
 
-
+**** rename variables
+rename (agea hinctnta gndr inwyye)  (age income sex year)
 
 ****
+gen agesq= age^2
 
+****
 rename mnactic emplstatus
 replace emplstatus=3 if emplstatus==4
 replace emplstatus=9  if emplstatus==7
@@ -98,15 +96,8 @@ egen mbasinc= mean(UBIincome)
 egen sdbasinc=sd(UBIincome)
 gen basinc= (UBIincome-mbasinc)/sdbasinc
 
-
-
-******GEN UNIVERSAL BASIC INCOME BINARY VARIABLE
-
-gen UBI=1 if basinc==3 | basinc==4
-replace UBI=0 if basinc==1 | basinc==2
-
+*** Rename variables
 rename (ctzcntr emplstatus married sex rlgdgr) (citizen employment maritalstatus male religion)
-
 
 *** iso08 by submajor groups
 tostring isco08, gen(my_string_variable) format(%07.0f)
@@ -115,7 +106,6 @@ gen first_two_digits =  substr(first_two_digits2, 1, strlen(first_two_digits2) -
 destring first_two_digits, generate(isco)
 
 **** variables for mechanisms (welfare retrenchment)
-
 rename wrkprbf UBIwrkprbf
 egen mwrkprbf= mean(UBIwrkprbf)
 egen sdwrkprbf=sd(UBIwrkprbf)
@@ -132,19 +122,15 @@ egen minctxff= mean(UBIinctxff)
 egen sdinctxff=sd(UBIinctxff)
 gen inctxff= (UBIinctxff-minctxff)/sdinctxff
 
-
-
 **** variables for mechanisms (COST)
 gen cost=1 if sbstrec==1 | sbstrec==2
 replace cost=0 if sbstrec==3 | sbstrec==4 | sbstrec==5
-
 
 *** generate cheating variable
 gen cheat1= 1 if  bennent==1 | bennent==2 
 replace cheat1=0 if bennent==3 | bennent==4| bennent==5
 gen cheat2= 1 if  uentrjb==1 | uentrjb==2 
 replace cheat2=0 if uentrjb==3 | uentrjb==4| uentrjb==5
-
 
 *** cheating variable below
 gen cheat=1 if cheat1==1 & cheat2==1
@@ -180,17 +166,12 @@ label variable trust2 "Generalised mistrust index"
 label variable institutions "Political mistrust index"
 label variable income "Income"
 label variable eduunmp "Education investment vs UI"
-label variable ipeqopt "Important: people treated equally"
-label variable lbenent "Low incomes get less benefit than legally entitled to"
 label define leveleduc 1 "Less than lower secondary education (ISCED 0-1) " 2 "Lower secondary education completed (ISCED 2) " 3 "Upper secondary education completed (ISCED 3)" 4 "Post-secondary non-tertiary education completed (ISCED 4)" 5 "Tertiary education completed (ISCED 5-6)"
 label values educ leveleduc
-
-
 tabulate  maritalstatus, generate(Maritalstatus)
 tabulate domicil, generate(Domicil)
 tabulate employment, generate(Employment) 
 tabulate educ, generate(Educ)
-
 label variable Employment1 "Paid work"
 label variable Employment2 "Education"
 label variable Employment3 "Unemployed"
@@ -212,9 +193,6 @@ label variable Educ2 "Lower secondary education completed (ISCED 2) "
 label variable Educ3 "Upper secondary education completed (ISCED 3)"
 label variable Educ4 "Post-secondary non-tertiary education completed (ISCED 4)"
 label variable Educ5 "Tertiary education completed (ISCED 5-6)"
-
-
-
 label variable cost "Welfare cost"
 label variable cheat "Misbehaviour"
 label variable wrkprbf "Parental Benefits"
@@ -234,9 +212,6 @@ global ideology lrscale religion
 
 sum basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat [aw=anweight]
 outreg2 using summary, tex label replace sum(log) keep(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) sortvar(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) 
-
-
-
 
 
 **** graphs
@@ -332,12 +307,8 @@ outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, Income Controls, YES
 areg basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
 outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
 
-
-
 ******
-
 *** MECHANISMS: welfare-retrenchment/taxes
-
 **** welfare retrenchment mechanism 
 
 areg eduunmp institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
@@ -579,16 +550,10 @@ graph export Table5Graph.pdf, replace
 
 graph combine citizenP.gph citizenT.gph GenderP.gph GenderT.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
 graph export Table6Graph.pdf, replace
-
-
 restore
 
 
-
-
 **** OTHER ROBUSTNESS CHECKS
-
-
 *** robustness political trusts
 
 global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
@@ -920,7 +885,7 @@ graph save outlier_country_polimistrust.gph, replace
 
 drop _est_y* _est_est*
 
-* stop and run the second loop otherwise it shows the coefficients for trust twice in the second graph
+* Stop and run the second loop otherwise it shows the coefficients for trust twice in the second graph
 
 ***** generalised mistrust
 levelsof country, local(levels)             
@@ -1062,6 +1027,7 @@ graph export populism.pdf, replace
 
 
 *********** end ********************
+
 
 
 
