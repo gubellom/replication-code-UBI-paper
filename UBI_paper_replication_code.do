@@ -72,10 +72,6 @@ estat kmo
 egen sum_= rowtotal($trust ) 
 pwcorr $trust institutions sum_, star(0.01) sig
 
-
-
-
-
 *** standardization for interepretation
 rename trust2 trustT
 egen mtrust= mean(trustT)
@@ -369,7 +365,6 @@ label variable Top2080 "Income Quintiles"
 
 
 *** Higher Education Heterogeneity 
-******TABLE 2
 ** top2080
 global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
 global incomevar i.employment i.isco 
@@ -404,7 +399,6 @@ graph save HigherEducT.gph, replace
 
 graph combine Top2080P.gph  Top2080T.gph HigherEducP.gph HigherEducT.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small))
 graph export Table4Graph.pdf, replace
-
 restore
 
 **** Heterogeneity
@@ -460,11 +454,7 @@ graph save ReligiousT.gph, replace
 
 graph combine ReligiousP.gph ReligiousT.gph, rows(2) cols(1) graphregion(color(white)) plotregion(color(white) margin(small))  
 graph export Table7Graph.pdf, replace
-
-
 restore
-
-
 
 ***** HETEROGENEOUS ANALYSIS Appendix 
 preserve
@@ -863,7 +853,7 @@ outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, Income Con
 
 **** Remove one country per time
 
-*** run the loop once per time otherwise it shows the coefficients for trust twice in the second graph
+*** Run the loops once per time, otherwise it shows the coefficients for trust twice in the second graph
 
 
 **** political mistrust
@@ -1027,6 +1017,7 @@ graph export populism.pdf, replace
 
 
 *********** end ********************
+
 
 
 
