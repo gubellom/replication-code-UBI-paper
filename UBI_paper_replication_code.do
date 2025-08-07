@@ -104,8 +104,6 @@ gen basinc= (UBIincome-mbasinc)/sdbasinc
 gen UBI=1 if basinc==3 | basinc==4
 replace UBI=0 if basinc==1 | basinc==2
 
-//preferences for investment over cash transfers
-
 rename (ctzcntr emplstatus married sex rlgdgr) (citizen employment maritalstatus male religion)
 
 
@@ -119,7 +117,6 @@ gen var1=my_string_variable
 gen var2=first_two_digits
 
 destring first_two_digits, generate(isco)
-*encode first_two_digits, gen(isco)
 
 **** variables for mechanisms (welfare retrechment)
 
@@ -1090,4 +1087,5 @@ graph save stronggovapoli.gph, replace
 
 graph combine antiimmigrantstrust.gph antiimmigrantspoli.gph eutrust.gph eupoli.gph stronggovatrust.gph stronggovapoli.gph, rows(3) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
 graph export populism.pdf, replace
+
 
