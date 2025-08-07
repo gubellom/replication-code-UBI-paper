@@ -353,7 +353,7 @@ outreg2 using Alternative.xls, tex label addtext(Region FE, YES, Income Controls
 areg inctxff institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
 outreg2 using Alternative.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2) dec(3) append ctitle((3)) 
 
-**** Mechanism cost: it should affect only political trust
+**** Mechanism cost
 
 areg basinc c.institutions c.trust2 $incomevar $socioeconomic $ideology if cost!=. & cheat!=.,absorb(region2) vce(cluster region2)
 outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2) sortvar(institutions trust2) dec(3) replace ctitle((1))
@@ -1087,5 +1087,6 @@ graph save stronggovapoli.gph, replace
 
 graph combine antiimmigrantstrust.gph antiimmigrantspoli.gph eutrust.gph eupoli.gph stronggovatrust.gph stronggovapoli.gph, rows(3) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
 graph export populism.pdf, replace
+
 
 
