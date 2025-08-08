@@ -207,7 +207,7 @@ global ideology lrscale religion
 ***descriptive statics
 
 sum basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat [aw=anweight]
-outreg2 using summary, tex label replace sum(log) keep(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) sortvar(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) 
+outreg2 using Table_B1, tex label replace sum(log) keep(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) sortvar(basinc institutions trstprl trstprt trstplt trust2 ppltrst pplfair pplhlp Employment* Domicil* Maritalstatus* hhmmb age agesq Educ* income isco lrscale religion wrkprbf eduunmp inctxff cost cheat) 
 
 
 **** graphs
@@ -217,34 +217,34 @@ graph save institutions.gph, replace
 graph bar (mean) trust2 [aw=anweight], over(iso2, sort(1) descending label(angle(0) labsize(small))) graphregion(color(white)) plotregion(color(white) margin(medsmall))  ytitle("Generalised Mistrust", size(medium)) yscale(titlegap(*5)) 
 graph save trust2.gph, replace
 graph combine institutions.gph trust2.gph, graphregion(color(white)) plotregion(color(white) margin(small)) xsize(8)
-graph export "combinedd.eps", replace
-
+graph export "Figure_C31.pdf", replace
+erase institutions.gph 
+erase trust2.gph
 *****
 revrs basinc
 tabulate revbasinc, generate(B)
-
 *setting colours
 graph hbar B1 B2 B3 B4 [aw=anweight], vert over(iso2, sort(4) descending label(angle(0) labsize(small))) stack percent legend(order(1 "Strongly against" 2 "Against" 3 "In favor" 4 "Strongly in favor" )) graphregion(color(white)) plotregion(color(white)) ytitle("UBI preferences % population", size(medium)) yscale(titlegap(*5)) bar(1, color(eltblue%40)) ///
     bar(2, color(ebblue%60)) ///
     bar(3, color(navy%80)) ///
     bar(4, color(dknavy%100))
-graph export UBI.pdf, replace
+graph export Figure_4.pdf, replace
 
 
 *** regressions with region fixed effects
 
 areg ppltrst pplfair, absorb(region2) vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) replace ctitle((1)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) replace ctitle((1)) 
 areg ppltrst pplhlp, absorb(region2) vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((2)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((2)) 
 areg pplhlp pplfair, absorb(region2)  vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((3)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((3)) 
 areg trstplt trstprt, absorb(region2)  vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((4)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((4)) 
 areg trstplt trstprl, absorb(region2)  vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((5)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((5)) 
 areg trstprl trstprt, absorb(region2)  vce(cluster region2)
-outreg2 using TABLEreg.xls, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((6)) 
+outreg2 using Table_C11, tex label addtext(Region FE, YES,) nocons adjr2  drop(i.region2) dec(3) append ctitle((6)) 
 
 
 **** binscatters
@@ -275,63 +275,69 @@ binscatter trstprl trstprt, absorb(region2) xtitle("Residualised" "Mistrust in p
 graph save bin6.gph, replace
 
 graph combine bin1.gph bin2.gph bin3.gph bin4.gph bin5.gph bin6.gph, graphregion(color(white)) plotregion(color(white) margin(small)) //xsize(8)
-graph export binscatterUBI3.pdf, replace
+graph export Figure_C11.pdf, replace
+erase bin1.gph 
+erase bin2.gph 
+erase bin3.gph 
+erase bin4.gph 
+erase bin5.gph 
+erase bin6.gph
 
 
 
 ***pairwise correlation
-estpost correlate $t $trust,  matrix 
+estpost correlate $trust,  matrix 
 est sto storagename
-esttab * using correlationgenpoli.tex, label replace unstack not noobs compress 
+esttab * using Table_C21.tex, label replace unstack not noobs compress 
 
 estpost correlate $t,  matrix 
 est sto storagename
-esttab * using correlationgen.tex, label replace unstack not noobs compress 
+esttab * using Table_C22.tex, label replace unstack not noobs compress 
 
 
 ***** TABLE 1
 areg basinc institutions,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
 areg basinc trust2,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
 areg basinc institutions trust2 ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
 areg basinc institutions trust2 $incomevar ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
 areg basinc institutions trust2 $incomevar $socioeconomic ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
 areg basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
+outreg2 using TABLE1.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
 
 ******
 *** MECHANISMS: welfare-retrenchment/taxes
 **** welfare retrenchment mechanism 
 
 areg eduunmp institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Alternative.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2) dec(3) replace ctitle((1))
+outreg2 using Table2.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2) dec(3) replace ctitle((1))
 areg wrkprbf institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Alternative.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2 income) dec(3) append ctitle((2)) 
+outreg2 using Table2.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2 income) dec(3) append ctitle((2)) 
 areg inctxff institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Alternative.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2) dec(3) append ctitle((3)) 
+outreg2 using Table2.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 income) sortvar(institutions trust2) dec(3) append ctitle((3)) 
 
 **** Mechanism cost
 
 areg basinc c.institutions c.trust2 $incomevar $socioeconomic $ideology if cost!=. & cheat!=.,absorb(region2) vce(cluster region2)
-outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2) sortvar(institutions trust2) dec(3) replace ctitle((1))
+outreg2 using Table3.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2) sortvar(institutions trust2) dec(3) replace ctitle((1))
 areg basinc c.institutions c.trust2 i.cost i.cheat $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((2))
+outreg2 using Table3.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((2))
 areg basinc c.institutions##i.cost c.trust2 i.cheat  $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.institutions#i.cost) dec(3) append ctitle((3))
+outreg2 using Table3.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.institutions#i.cost) dec(3) append ctitle((3))
 margins, dydx(institutions) at(cost=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(vsmall)) xlab(1 "Do not agree" 2 "Agree") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Social benefits/services place too great strain" "on the economy ") title("Average Marginal Effect of Political Mistrust with 95% CIs" "(Single interaction)", size(small)) yline(0) graphregion(color(white)) plotregion(color(white))
 graph save cost1.gph, replace  
 areg basinc c.institutions c.trust2##i.cheat i.cost $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.trust2#i.cheat) dec(3) append ctitle((4))
+outreg2 using Table3.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.trust2#i.cheat) dec(3) append ctitle((4))
 margins, dydx(trust2) at(cheat=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(vsmall))  xlab(1 "Do not agree" 2 "Agree") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Citizens likely to cheat") title( "Average Marginal Effect of Generalised Mistrust with 95% CIs" "(Single interaction)" , size(small)) yline(0) graphregion(color(white)) plotregion(color(white))
 graph save cheat1.gph, replace
 areg basinc c.institutions##i.cost c.trust2##i.cheat $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using cheat.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.trust2#i.cheat) dec(3) append ctitle((5))
+outreg2 using Table3.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost i.cheat c.institutions#i.cost c.trust2#i.cheat) sortvar(institutions trust2 i.cost i.cheat c.trust2#i.cheat) dec(3) append ctitle((5))
 margins, dydx(institutions) at(cost=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(vsmall)) xlab(1 "Do not agree" 2 "Agree") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Social benefits/services place too great strain" "on the economy") title( "Average Marginal Effect of Political Mistrust with 95% CIs" "(Double interaction)", size(small)) yline(0) graphregion(color(white)) plotregion(color(white))
 graph save cost2.gph, replace  
@@ -341,8 +347,11 @@ coefplot, vert ytitle("Effect on Linear Prediction", size(vsmall)) xlab(1 "Do no
 graph save cheat2.gph, replace
 
 graph combine cost1.gph cheat1.gph cost2.gph cheat2.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export TableCheatGraph.pdf, replace
-
+graph export Figure_E1.pdf, replace
+erase cost1.gph 
+erase cheat1.gph 
+erase cost2.gph 
+erase cheat2.gph
 
 
 **** Heterogeneous Analysis main body of the paper
@@ -370,7 +379,7 @@ global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domic
 global incomevar i.employment i.isco 
 global ideology lrscale religion 
 areg basinc c.institutions c.trust2 i.Top2080 c.institutions#i.Top2080 c.trust2#i.Top2080  $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using HINCOME.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.Top2080 c.institutions#i.Top2080 c.trust2#i.Top2080) sortvar(c.institutions c.trust2 i.Top2080 c.institutions#i.Top2080 c.trust2#i.Top2080) dec(3) replace ctitle((1))
+outreg2 using Table_F11.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.Top2080 c.institutions#i.Top2080 c.trust2#i.Top2080) sortvar(c.institutions c.trust2 i.Top2080 c.institutions#i.Top2080 c.trust2#i.Top2080) dec(3) replace ctitle((1))
 margins, dydx(institutions) at(Top2080=(2 1 3)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Bottom 20%" 2 "Range 21-79%" 3 "Top 80%") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Income Groups") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) yline(0) graphregion(color(white)) plotregion(color(white))
 graph save Top2080P.gph, replace  
@@ -379,15 +388,13 @@ margins, dydx(trust2) at(Top2080=(2 1 3)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Bottom 20%" 2 "Range 21-79%" 3 "Top 80%") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Income") title("Average Marginal Effect with 95% CIs" "Generalised Mistrust", size(medsmall)) yline(0)  graphregion(color(white)) plotregion(color(white))
 graph save Top2080T.gph, replace  
 
-graph combine Top2080P.gph Top2080T.gph
-
 
 *** Higher Education
 global socioeconomic age agesq i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 areg basinc c.institutions c.trust2 i.HigherEduc c.institutions#i.HigherEduc c.trust2#i.HigherEduc $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using HINCOME.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.HigherEduc c.institutions#i.HigherEduc c.trust2#i.HigherEduc) sortvar(c.institutions c.trust2 i.HigherEduc c.institutions#i.HigherEduc c.trust2#i.HigherEduc) dec(3) append ctitle((3))
+outreg2 using Table_F11.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.HigherEduc c.institutions#i.HigherEduc c.trust2#i.HigherEduc) sortvar(c.institutions c.trust2 i.HigherEduc c.institutions#i.HigherEduc c.trust2#i.HigherEduc) dec(3) append ctitle((3))
 margins, dydx(institutions) at(HigherEduc=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "No Higher Education" 2 "Higher Education") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Education") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) graphregion(color(white)) plotregion(color(white))
 graph save HigherEducP.gph, replace  
@@ -398,21 +405,16 @@ graph save HigherEducT.gph, replace
 
 
 graph combine Top2080P.gph  Top2080T.gph HigherEducP.gph HigherEducT.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small))
-graph export Table4Graph.pdf, replace
+graph export Figure_F11.pdf, replace
+erase Top2080P.gph  
+erase Top2080T.gph 
+erase HigherEducP.gph 
+erase HigherEducT.gph
 restore
 
 **** Heterogeneity
 
 preserve
-
-** gen Political View
-gen centrist=1 if lrscale==5
-replace centrist=2 if lrscale>=6 //right
-replace centrist=3 if lrscale<=4  //leftist
-label define H3 1 "Centrist" 2 "Rightist" 3 "Leftist" 
-label values centrist H3
-label variable centrist "Political View"
-
 ** gen religious
 gen NotRel=0 if rlgblg==2
 replace NotRel=1 if rlgblg==1
@@ -421,29 +423,12 @@ label values NotRel H4
 label variable NotRel "Religion"
 tab NotRel
 
-****Table 3: Ideology
-
-
-*** centrist
-global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
-global incomevar income i.employment i.isco 
-global ideology religion 
-areg basinc c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using ideology.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist) dec(3) replace ctitle((2))
-margins, dydx(institutions) at(centrist=(3 1 2)) post
-coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Leftist" 2 "Centrist" 3 "Rightist") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Political spectrum") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) yline(0) graphregion(color(white)) plotregion(color(white))
-graph save PoliticalP.gph, replace  
-quietly:areg basinc c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-margins, dydx(trust2) at(centrist=(3 1 2)) post
-coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5))  xlab(1 "Leftist" 2 "Centrist" 3 "Rightist") xscale(titlegap(*5)) ylab(-0.08(0.02)0.04, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Political spectrum") title("Average Marginal Effect with 95% CIs" "Generalised Mistrust", size(medsmall)) yline(0) graphregion(color(white)) plotregion(color(white))
-graph save PoliticalT.gph, replace 
-
 *** Religious
 global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
 global incomevar income i.employment i.isco 
 global ideology lrscale 
 areg basinc c.institutions c.trust2 i.NotRel c.institutions#i.NotRel c.trust2#i.NotRel $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using ideology.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.NotRel c.institutions#i.NotRel c.trust2#i.NotRel) sortvar(c.institutions c.trust2 i.NotRel c.institutions#i.NotRel c.trust2#i.NotRel) dec(3) append ctitle((1))
+outreg2 using Table_F21.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.NotRel c.institutions#i.NotRel c.trust2#i.NotRel) sortvar(c.institutions c.trust2 i.NotRel c.institutions#i.NotRel c.trust2#i.NotRel) dec(3) append ctitle((1))
 margins, dydx(institutions) at(NotRel=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(2 "Religious" 1 "Not Religious") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Religiosity", size(large)) title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(large)) graphregion(color(white)) plotregion(color(white))
 graph save ReligiousP.gph, replace  
@@ -453,7 +438,9 @@ coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlega
 graph save ReligiousT.gph, replace 
 
 graph combine ReligiousP.gph ReligiousT.gph, rows(2) cols(1) graphregion(color(white)) plotregion(color(white) margin(small))  
-graph export Table7Graph.pdf, replace
+graph export Figure_F21.pdf, replace
+erase ReligiousP.gph 
+erase ReligiousT.gph
 restore
 
 ***** HETEROGENEOUS ANALYSIS Appendix 
@@ -482,7 +469,7 @@ global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus hhmmb
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 areg basinc c.institutions c.trust2 i.city c.institutions#i.city c.trust2#i.city $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Urban.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.city c.institutions#i.city c.trust2#i.city) sortvar(c.institutions c.trust2 i.city c.institutions#i.city c.trust2#i.city) dec(3) replace ctitle((1))
+outreg2 using Table_F31.tex,  label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.city c.institutions#i.city c.trust2#i.city) sortvar(c.institutions c.trust2 i.city c.institutions#i.city c.trust2#i.city) dec(3) replace ctitle((1))
 margins, dydx(institutions) at(city=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Rural or Small City" 2 "Big City") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Residential Area") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) graphregion(color(white)) plotregion(color(white))
 graph save UrbanP.gph, replace  
@@ -496,7 +483,7 @@ global socioeconomic i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 areg basinc c.institutions c.trust2 i.Over65 c.institutions#i.Over65 c.trust2#i.Over65 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Urban.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.Over65 c.institutions#i.Over65 c.trust2#i.Over65) sortvar(c.institutions c.trust2 i.Over65 c.institutions#i.Over65 c.trust2#i.Over65) dec(3) append ctitle((2))
+outreg2 using Table_F31.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.Over65 c.institutions#i.Over65 c.trust2#i.Over65) sortvar(c.institutions c.trust2 i.Over65 c.institutions#i.Over65 c.trust2#i.Over65) dec(3) append ctitle((2))
 margins, dydx(institutions) at(Over65=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Under 65" 2 "Over 65") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Age") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) graphregion(color(white)) plotregion(color(white))
 graph save Over65P.gph, replace  
@@ -512,7 +499,7 @@ global socioeconomic age agesq i.educ i.male i.maritalstatus ib4.domicil hhmmb
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 areg basinc  c.institutions c.trust2 i.citizen c.institutions#i.citizen c.trust2#i.citizen $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Urban.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.citizen c.institutions#i.citizen c.trust2#i.citizen) sortvar(c.institutions c.trust2 i.citizen c.institutions#i.citizen c.trust2#i.citizen) dec(3) append ctitle((3))
+outreg2 using Table_F31.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.citizen c.institutions#i.citizen c.trust2#i.citizen) sortvar(c.institutions c.trust2 i.citizen c.institutions#i.citizen c.trust2#i.citizen) dec(3) append ctitle((3))
 margins, dydx(institutions) at(citizen=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Noncitizen" 2 "Citizen") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Citizenship") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) yline(0) order(2.citizen 1.citizen) graphregion(color(white)) plotregion(color(white))
 graph save citizenP.gph, replace  
@@ -526,7 +513,7 @@ global socioeconomic age agesq i.educ i.citizen i.maritalstatus ib4.domicil hhmm
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 areg basinc  c.institutions c.trust2 i.male c.institutions#i.male c.trust2#i.male $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using Urban.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.male c.institutions#i.male c.trust2#i.male) sortvar(c.institutions c.trust2 i.male c.institutions#i.male c.trust2#i.male) dec(3) append ctitle((4))
+outreg2 using Table_F31.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.male c.institutions#i.male c.trust2#i.male) sortvar(c.institutions c.trust2 i.male c.institutions#i.male c.trust2#i.male) dec(3) append ctitle((4))
 margins, dydx(institutions) at(male=(0 1)) post
 coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlegap(*5)) xlab(1 "Female" 2 "Male") xscale(titlegap(*5)) ylab(, labsize(vsmall)) ciopts(recast(rcap)) xtitle("Gender") title("Average Marginal Effect with 95% CIs" "Political Mistrust", size(medsmall)) graphregion(color(white)) plotregion(color(white))
 graph save GenderP.gph, replace  
@@ -536,10 +523,18 @@ coefplot, vert ytitle("Effect on Linear Prediction", size(small)) yscale(titlega
 graph save GenderT.gph, replace 
 
 graph combine UrbanP.gph  UrbanT.gph Over65P.gph Over65T.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export Table5Graph.pdf, replace
+graph export Figure_F31.pdf, replace
 
 graph combine citizenP.gph citizenT.gph GenderP.gph GenderT.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export Table6Graph.pdf, replace
+graph export Figure_F32.pdf, replace
+erase UrbanP.gph  
+erase UrbanT.gph 
+erase Over65P.gph 
+erase Over65T.gph
+erase citizenP.gph 
+erase citizenT.gph 
+erase GenderP.gph 
+erase GenderT.gph
 restore
 
 
@@ -555,74 +550,69 @@ egen polgroup= group(trstplt trstprt trstprl)
 
 
 areg basinc trstplt trust2 $incomevar $socioeconomic $ideology if polgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) replace ctitle((1)) 
+outreg2 using Table_G22.tex,  label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) replace ctitle((1)) 
 areg basinc trstprt trust2 $incomevar $socioeconomic $ideology if polgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) append ctitle((2)) 
+outreg2 using Table_G22.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) append ctitle((2)) 
 areg basinc trstprl trust2 $incomevar $socioeconomic $ideology if polgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) append ctitle((3))
+outreg2 using Table_G22.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(trstplt trstprt trstprl trust2 income) sortvar(trstplt trstprt trstprl trust2 income) dec(3) append ctitle((3))
 
 
 
 **** robustnes social trust
 egen trustgroup= group(ppltrst pplfair pplhlp)
 areg basinc ppltrst institutions  $incomevar $socioeconomic $ideology if trustgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS2.xls,  tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) replace ctitle((1)) 
+outreg2 using Table_G21.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) replace ctitle((1)) 
 areg basinc pplfair institutions  $incomevar $socioeconomic $ideology if trustgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS2.xls,  tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) append ctitle((2)) 
+outreg2 using Table_G21.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) append ctitle((2)) 
 areg basinc pplhlp institutions  $incomevar $socioeconomic $ideology if trustgroup!=.,absorb(region2) vce(cluster region2)
-outreg2 using UBI2INS2.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) append ctitle((3)) 
+outreg2 using Table_G21.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  keep(ppltrst pplfair pplhlp institutions income) sortvar(ppltrst pplfair pplhlp institutions income) dec(3) append ctitle((3)) 
 
 **** robustness UBI 1-4 scale, probit
-
 oprobit basinc institutions i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, ) nocons e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, ) nocons e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
 oprobit basinc trust2 i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, ) nocons e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, ) nocons e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
 oprobit basinc institutions trust2 i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, ) nocons  e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, ) nocons  e(ll)  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
 oprobit basinc institutions trust2 $incomevar i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, Income Controls, YES) nocons  e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, Income Controls, YES) nocons  e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
 oprobit basinc institutions trust2 $incomevar $socioeconomic i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons  e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons  e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
 oprobit basinc institutions c.trust2 $incomevar $socioeconomic $ideology i.region2, vce(cluster region2)
-outreg2 using probitlogit.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
-
+outreg2 using Table_G41.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons e(ll) drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
 
 
 *** robustness country
-
 areg basinc institutions,absorb(country) vce(cluster country)
-outreg2 using UBI2country2.xls, tex label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) replace ctitle((1)) 
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) replace ctitle((1)) 
 areg basinc trust2,absorb(country) vce(cluster country)
-outreg2 using UBI2country2.xls, tex label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) a ctitle((2)) 
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) append ctitle((2)) 
 areg basinc institutions trust2 ,absorb(country) vce(cluster country)
-outreg2 using UBI2country2, tex label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) append ctitle((3))  
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, ) nocons adjr2  drop(i.country) sortvar(institutions trust2) dec(3) append ctitle((3))  
 areg basinc institutions trust2  $incomevar ,absorb(country) vce(cluster country)
-outreg2 using UBI2country2.xls, tex label addtext(Country FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
 areg basinc institutions trust2 $incomevar $socioeconomic ,absorb(country) vce(cluster country)
-outreg2 using UBI2country2.xls, tex label addtext(Country FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.country) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.country) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
 areg basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(country) vce(cluster country)
-outreg2 using UBI2country2.xls, tex label addtext(Country FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.country) sortvar(institutions trust2 income) dec(3) append ctitle((6))
+outreg2 using Table_D11.tex, label addtext(Country FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.country) sortvar(institutions trust2 income) dec(3) append ctitle((6))
 
-***** TABLE 1 - income categorical variable
-
-
+*********************************
+***** Income categorical variable
+*********************************
 global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
 global incomevar i.income i.employment i.isco 
 global ideology lrscale religion 
 
-
-
 areg basinc institutions,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1)) 
+outreg2 using TABLE_G43.tex, label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1)) 
 areg basinc institutions trust2 ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2)) 
+outreg2 using TABLE_G43.tex, label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2)) 
 areg basinc institutions trust2 $incomevar ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((3))
+outreg2 using TABLE_G43.tex, label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((3))
 areg basinc institutions trust2 $incomevar $socioeconomic ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((4))  
+outreg2 using TABLE_G43.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((4))  
 areg basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1income.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((5)) 
+outreg2 using TABLE_G43.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 i.income) dec(3) append ctitle((5)) 
 
 
 *** Generate cheating variable using PCA (APPENDIX ROBUSTNESS CHECKS)
@@ -642,7 +632,7 @@ label variable misb2 "Misbehaviour (PCA)"
 * Generate correlation table
 estpost correlate $misb,  matrix 
 est sto storagename
-esttab * using correlationmisb.tex, label replace unstack not noobs compress 
+esttab * using Table_E23.tex, label replace unstack not noobs compress 
 
 **** Generate the pca table
 
@@ -674,38 +664,41 @@ estadd matrix table = t
 esttab, ///
     cells("table[Eigenvalue](t) table[Difference](t) table[Proportion](t fmt(4)) table[Cumulative](t fmt(4))") ///
     nogap noobs nonumber nomtitle
-esttab using pcamisb.tex, tex label replace ///
+esttab using Table_E21_E22.tex, tex label replace ///
     cells("table[Eigenvalue](t) table[Difference](t) table[Proportion](t fmt(4)) table[Cumulative](t fmt(4))") ///
     nogap noobs nonumber nomtitle
 
 esttab, ///
     cells("L[Comp1](t) L[Comp2](t) Psi[Unexplained]") ///
     nogap noobs nonumber nomtitle
-esttab using pcamisb.tex, tex label append ///
+esttab using Table_E21_E22.tex, tex label append ///
     cells("L[Comp1](t) L[Comp2](t) Psi[Unexplained]") ///
     nogap noobs nonumber nomtitle
 
 screeplot, yline(1) ci(het) graphregion(color(white)) lcolor(edkblue) mcolor(edkblue)
-graph export screenplotmisb2.pdf, replace 
+graph export Figure_E21.pdf, replace 
 
 
-
+***************************
+global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
+global incomevar income i.employment i.isco 
+global ideology lrscale religion 
 
 * pca for costs
 
 areg basinc c.institutions c.trust2 i.cost misb2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using misb.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.misb2) sortvar(institutions trust2 i.cost i.cheat) dec(3) replace ctitle((1))
+outreg2 using Table_E24.tex,  label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.misb2) sortvar(institutions trust2 i.cost i.cheat) dec(3) replace ctitle((1))
 areg basinc c.institutions c.trust2##c.misb2 i.cost $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using misb.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost misb2 c.institutions#i.cost c.trust2#c.misb2) sortvar(institutions trust2 i.cost misb2 c.trust2#c.misb2) dec(3) append ctitle((2))
+outreg2 using Table_E24.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost misb2 c.institutions#i.cost c.trust2#c.misb2) sortvar(institutions trust2 i.cost misb2 c.trust2#c.misb2) dec(3) append ctitle((2))
 areg basinc c.institutions##i.cost c.trust2##c.misb2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using misb.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.misb2 c.institutions#i.cost c.trust2#c.misb2) sortvar(institutions trust2 i.cost misb2 c.trust2#c.misb2) dec(3) append ctitle((3))
+outreg2 using Table_E24.tex, label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.misb2 c.institutions#i.cost c.trust2#c.misb2) sortvar(institutions trust2 i.cost misb2 c.trust2#c.misb2) dec(3) append ctitle((3))
 
 *** plot the graph of the interactions ************
 
 
 margins, dydx(trust2) at(misb2=(-2.319832(0.5430993)3.111161))
 marginsplot , xlabel(-2.319832 `"-2.32"' -1.2336334 `" -1.23 "' -0.1474348 `" -0.15 "'  0.9387638 `" -0.94 "'  2.0249624 `" 2.02 "' 3.111161 `" 3.11 "', labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl",size(medsmall)) ytitle("Effects on Linear Prediction", size(medsmall)) graphregion(color(white)) plotregion(color(white))
-graph export marginsmisb2.pdf, replace
+graph export Figure_E22.pdf, replace
 
 
 
@@ -743,25 +736,25 @@ estadd matrix table = t
 esttab, ///
     cells("table[Eigenvalue](t) table[Difference](t) table[Proportion](t fmt(4)) table[Cumulative](t fmt(4))") ///
     nogap noobs nonumber nomtitle
-esttab using pca.tex, tex replace ///
+esttab using Table_G11_G22.tex, tex replace ///
     cells("table[Eigenvalue](t) table[Difference](t) table[Proportion](t fmt(4)) table[Cumulative](t fmt(4))") ///
     nogap noobs nonumber nomtitle
 
 esttab, ///
     cells("L[Comp1](t) L[Comp2](t) L[Comp3](t) L[Comp4](t) L[Comp5](t) L[Comp6](t) Psi[Unexplained]") ///
     nogap noobs nonumber nomtitle
-esttab using pca.tex, tex label append ///
+esttab using Table_G11_G22.tex, tex label append ///
     cells("L[Comp1](t) L[Comp2](t) L[Comp3](t) L[Comp4](t) L[Comp5](t) L[Comp6](t) Psi[Unexplained]") ///
     nogap noobs nonumber nomtitle
 
 screeplot, yline(1) ci(het) graphregion(color(white)) lcolor(edkblue) mcolor(edkblue)
-graph export screenplot.pdf, replace 
+graph export Figure_G11.pdf, replace 
 
 ***** create table pwcorr
 
 estpost correlate $trust,  matrix 
 est sto storagename
-esttab * using correlationpoli.tex, label replace unstack not noobs compress 
+esttab * using Table_G13.tex, label replace unstack not noobs compress 
 
 ***** only mistrust
 
@@ -770,7 +763,6 @@ pwcorr  trust2 institutions, star(0.0001) sig
 estpost correlate trust2 institutions,  matrix 
 est sto storagename
 esttab * using correlationgen.tex, label replace unstack not noobs compress 
-graph matrix trust2 institutions
 
 qui: areg basinc institutions trust2 ,absorb(region2) vce(cluster region2)
 vif, uncentered
@@ -783,25 +775,25 @@ vif, uncentered
 
 ***** TABLE 1
 areg basinc trust2,absorb(region2) vce(cluster region2)
-outreg2 using mistrustonly.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(trust2) dec(3) replace ctitle((1))
+outreg2 using Table_D12.tex, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(trust2) dec(3) replace ctitle((1))
 areg basinc trust2 $incomevar ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustonly.xls, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((2))
+outreg2 using Table_D12.tex, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((2))
 areg basinc trust2 $incomevar $socioeconomic ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustonly.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((3))  
+outreg2 using Table_D12.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((3))  
 areg basinc trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustonly.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((4)) 
+outreg2 using Table_D12.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(trust2 income) dec(3) append ctitle((4)) 
 
 
 **** Generalised Mistrust x Welfare cost
 
 areg basinc c.institutions c.trust2##i.cost $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustxcost.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost) sortvar(institutions trust2 i.cost i.cheat) dec(3) replace ctitle((1))
+outreg2 using Table_E31.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost) sortvar(institutions trust2 i.cost i.cheat) dec(3) replace ctitle((1))
 areg basinc c.institutions##i.cost c.trust2##i.cost $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustxcost.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost c.institutions#i.cost) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((2))
+outreg2 using Table_E31.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost c.institutions#i.cost) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((2))
 areg basinc c.institutions c.trust2##i.cost i.cheat $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustxcost.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((3))
+outreg2 using Table_E31.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((3))
 areg basinc c.institutions##i.cost c.trust2##i.cost i.cheat $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using mistrustxcost.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost c.institutions#i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((4))
+outreg2 using Table_E31.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 i.cost c.trust2#i.cost c.institutions#i.cost i.cheat) sortvar(institutions trust2 i.cost i.cheat) dec(3) append ctitle((4))
 
 
 ******** plot the marginal effects
@@ -827,22 +819,26 @@ coefplot, vert ytitle("Effect on Linear Prediction", size(vsmall)) xlab(1 "Do no
 graph save mistrustxcost4.gph, replace  
 
 graph combine mistrustxcost1.gph  mistrustxcost2.gph mistrustxcost3.gph mistrustxcost4.gph, rows(2) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export mistrustxcostmargins.pdf, replace
+graph export Figure_E31.pdf, replace
+erase mistrustxcost1.gph
+erase mistrustxcost2.gph 
+erase mistrustxcost3.gph 
+erase mistrustxcost4.gph
 
 **** Non-standardized basinc
 
 areg NS_basinc institutions,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) replace ctitle((1))
 areg NS_basinc trust2,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((2))
 areg NS_basinc institutions trust2 ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, ) nocons adjr2  drop(i.region2) sortvar(institutions trust2) dec(3) append ctitle((3)) 
 areg NS_basinc institutions trust2 $incomevar ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, Income Controls, YES) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((4))
 areg NS_basinc institutions trust2 $incomevar $socioeconomic ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES,) nocons adjr2  drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((5))  
 areg NS_basinc institutions c.trust2 $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using TABLE1_NS_basinc.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
+outreg2 using Table_G42.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 drop($socioeconomic $ideology i.employment i.isco i.region2) sortvar(institutions trust2 income) dec(3) append ctitle((6)) 
 
 
 
@@ -876,6 +872,7 @@ graph save outlier_country_polimistrust.gph, replace
 drop _est_y* _est_est*
 
 * Stop and run the second loop otherwise it shows the coefficients for trust twice in the second graph
+STOP
 
 ***** generalised mistrust
 levelsof country, local(levels)             
@@ -895,7 +892,9 @@ drop _est_y* _est_est*
 
 
 graph combine outlier_country_polimistrust.gph outlier_country_genmitrust.gph, rows(2) cols(1) graphregion(color(white)) plotregion(color(white) margin(small)) title("Estimation with one country left out", size(large)) 
-graph export outlier_trust.pdf, replace 
+graph export Figure_G31.pdf, replace 
+erase outlier_country_polimistrust.gph
+erase outlier_country_genmitrust.gph
 
 ****** POPULISM APPENDIX
 **** ANTI-IMMIGRANTS
@@ -951,8 +950,9 @@ coefplot, vert ytitle("Effect on Linear Prediction", size(medsmall)) yscale(titl
 graph save PoliticalT.gph, replace 
 
 graph combine PoliticalP.gph PoliticalT.gph , rows(2) cols(1) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export politicalideology.pdf, replace
-
+graph export Figure_5.pdf, replace
+erase PoliticalP.gph 
+erase PoliticalT.gph
 
 *** regression table
 
@@ -960,24 +960,24 @@ global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domic
 global incomevar income i.employment i.isco 
 global ideology religion 
 quietly:areg basinc c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) replace ctitle((1))
+outreg2 using Table_4.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) replace ctitle((1))
 
 global socioeconomic age agesq i.educ i.male i.citizen i.maritalstatus ib4.domicil hhmmb 
 global incomevar income i.employment i.isco 
 global ideology lrscale religion 
 quietly:areg basinc c.institutions c.trust2 anti c.institutions#c.anti c.trust2#c.anti $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv)  dec(3) append ctitle((2)) 
+outreg2 using Table_4.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv)  dec(3) append ctitle((2)) 
 
 quietly:areg basinc c.institutions c.trust2 trstep c.institutions#c.trstep c.trust2#c.trstep $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3)) 
+outreg2 using Table_4.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3)) 
 
 quietly:areg basinc c.institutions c.trust2 ipstrgv c.institutions#c.ipstrgv c.trust2#c.ipstrgv $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((4))
+outreg2 using Table_4.tex, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) sortvar(c.institutions c.trust2 i.centrist c.institutions#i.centrist c.trust2#i.centrist c.trust2#c.anti c.institutions#c.anti c.trust2#c.trstep c.institutions#c.trstep c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((4))
 
 *** margins plot anti immigrants
 
 quietly:areg basinc c.institutions c.trust2 anti c.institutions#c.anti c.trust2#c.anti $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) dec(3) replace ctitle((1)) 
+*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) dec(3) replace ctitle((1)) 
 margins, dydx(trust2) at(anti=(-2.159575 (1.12410025)2.336826))
 marginsplot , xlabel(-2.159575  `"-2.16"' -1.03547475 `" -1.04 "'  0.0886255 `" -0.09 "' 1.21272575 `" 1.21 "' 2.336826 `" 2.33 "', labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white)) plotregion(color(white))
 graph save antiimmigrantstrust.gph, replace  
@@ -990,7 +990,7 @@ graph save antiimmigrantspoli.gph, replace
 *** TRUST IN EUROPEAN PARLIAMENT
 
 quietly:areg basinc c.institutions c.trust2 trstep c.institutions#c.trstep c.trust2#c.trstep $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) dec(3) append ctitle((2)) 
+*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) dec(3) append ctitle((2)) 
 margins, dydx(trust2) at(trstep=(0(1)10))
 marginsplot , xlabel(0 `"0"' 2 `" 2 "'  4 `" 4 "' 6 `" 6 "'  8 `" 8 "' 10 `" 10 "', labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white)) plotregion(color(white))
 graph save eutrust.gph, replace  
@@ -1003,7 +1003,7 @@ graph save eupoli.gph, replace
 **** authoritarism
 
 quietly:areg basinc c.institutions c.trust2 ipstrgv c.institutions#c.ipstrgv c.trust2#c.ipstrgv $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3))
+*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3))
 margins, dydx(trust2) at(ipstrgv=(1(1)6)) 
 marginsplot , xlabel(1 `" 1 "' 2 `" 2 "'  3 `" 3 "' 4`" 4 "' 5 `" 5 "' 6 `" 6 "' , labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white) ) plotregion(color(white))
 graph save stronggovatrust.gph, replace  
@@ -1013,12 +1013,12 @@ marginsplot , xlabel(1 `" 1 "' 2 `" 2 "'  3 `" 3 "' 4`" 4 "' 5 `" 5 "' 6 `" 6 "'
 graph save stronggovapoli.gph, replace  
 
 graph combine antiimmigrantstrust.gph antiimmigrantspoli.gph eutrust.gph eupoli.gph stronggovatrust.gph stronggovapoli.gph, rows(3) cols(2) graphregion(color(white)) plotregion(color(white) margin(small)) 
-graph export populism.pdf, replace
-
+graph export Figure_6.pdf, replace
+erase antiimmigrantstrust.gph 
+erase antiimmigrantspoli.gph 
+erase eutrust.gph 
+erase eupoli.gph 
+erase stronggovatrust.gph 
+erase stronggovapoli.gph
 
 *********** end ********************
-
-
-
-
-
