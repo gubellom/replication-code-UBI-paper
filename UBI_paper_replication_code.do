@@ -977,7 +977,6 @@ outreg2 using Table_4.tex, tex label addtext(Region FE, YES, Income Controls, YE
 *** margins plot anti immigrants
 
 quietly:areg basinc c.institutions c.trust2 anti c.institutions#c.anti c.trust2#c.anti $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) dec(3) replace ctitle((1)) 
 margins, dydx(trust2) at(anti=(-2.159575 (1.12410025)2.336826))
 marginsplot , xlabel(-2.159575  `"-2.16"' -1.03547475 `" -1.04 "'  0.0886255 `" -0.09 "' 1.21272575 `" 1.21 "' 2.336826 `" 2.33 "', labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white)) plotregion(color(white))
 graph save antiimmigrantstrust.gph, replace  
@@ -990,7 +989,6 @@ graph save antiimmigrantspoli.gph, replace
 *** TRUST IN EUROPEAN PARLIAMENT
 
 quietly:areg basinc c.institutions c.trust2 trstep c.institutions#c.trstep c.trust2#c.trstep $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.trstep c.institutions#c.trstep) dec(3) append ctitle((2)) 
 margins, dydx(trust2) at(trstep=(0(1)10))
 marginsplot , xlabel(0 `"0"' 2 `" 2 "'  4 `" 4 "' 6 `" 6 "'  8 `" 8 "' 10 `" 10 "', labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white)) plotregion(color(white))
 graph save eutrust.gph, replace  
@@ -1003,7 +1001,6 @@ graph save eupoli.gph, replace
 **** authoritarism
 
 quietly:areg basinc c.institutions c.trust2 ipstrgv c.institutions#c.ipstrgv c.trust2#c.ipstrgv $incomevar $socioeconomic $ideology ,absorb(region2) vce(cluster region2)
-*outreg2 using populism.xls, tex label addtext(Region FE, YES, Income Controls, YES, Individual Controls, YES, Ideology Controls, YES) nocons adjr2 keep(institutions c.trust2 c.trust2#c.anti c.institutions#c.anti) sortvar(institutions c.trust2 c.trust2#c.ipstrgv c.institutions#c.ipstrgv) dec(3) append ctitle((3))
 margins, dydx(trust2) at(ipstrgv=(1(1)6)) 
 marginsplot , xlabel(1 `" 1 "' 2 `" 2 "'  3 `" 3 "' 4`" 4 "' 5 `" 5 "' 6 `" 6 "' , labsize(small)) ylabel(, labsize(vsmall)) yline(0) ciopt(fcolor(%10) lpattern(dash) lcolor(black)) recast(line) recastci(rarea) title("Average Marginal Effect with 95% Cl" "Generalised mistrust",size(medium)) ytitle("Effects on Linear Prediction", size(small)) graphregion(color(white) ) plotregion(color(white))
 graph save stronggovatrust.gph, replace  
@@ -1022,3 +1019,4 @@ erase stronggovatrust.gph
 erase stronggovapoli.gph
 
 *********** end ********************
+
